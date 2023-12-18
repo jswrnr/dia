@@ -14,7 +14,7 @@ def map_block(block) -> dict:
     # get the title
     title = block[0][2:]
     # get the authors
-    authors = block[1][2:].split(",").strip().join()
+    authors = block[1][2:].split(",").strip().join(", ")
     # get the year
     year = int(block[2][3:7])
     # get the publication venue
@@ -32,22 +32,24 @@ def map_block(block) -> dict:
     return mapped_block  
 
 def save_block(block, file_name):
+    # open the file in append mode
     with open(file_name, 'a') as file:
-        file.write(block)
-        file.write("\n")
+        # create a string in csv format
+        string = f"{block['title']};{block['authors']};{block['year']};{block['venue']};{block['index']}\n"
+
 
 
 def process_block(block):
     # filter unwanted blocks
     if not filter_block(block):
-        return 
-    mapped_block = map_block(block)
+        return None
+    return map_block(block)
 
 
 
-def process_file(name: str):
+def process_file(inputFileName: str, outputFileName: str):
 # Open in read mode
-    with open(name, 'r') as file:
+    with open(inputFileName, 'r') as file:
         block = []
 
         for line in file:
@@ -55,7 +57,10 @@ def process_file(name: str):
             if line.strip() == '':
                 if block:
                     # if the block is not empty, process the block
-                    process_block(block)
+                    processed_block = process_block(block)
+                    if processed_block:
+                        # if the processed block is not empty, save it
+                        save_block(processed_block, outputFileName)
                     block = []  # Reset the block
             else:
                 # If the line is not empty, add it to the block
@@ -63,10 +68,14 @@ def process_file(name: str):
 
         if block:
         # Process the remaining block if it is not empty
-            process_block(block)
+            processed_block = process_block(block)
+            if processed_block:
+                # if the processed block is not empty, save it
+                save_block(processed_block, outputFileName)
 
 def main():
-    process_file('data/dblp.txt')
+    process_file('data/dblp.txt', 'data/DBLP_1995_2004.csv')
+    process_file('data/citation-acm-v8.txt', 'data/ACM_1995_2004.csv')
 
 if __name__ == '__main__':
     main()

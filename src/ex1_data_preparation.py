@@ -94,7 +94,7 @@ def process_file(inputFileName: str, outputFileName: str):
 
 def main():
     process_file('data/dblp.txt', 'data/DBLP_1995_2004.csv')
-   # process_file('data/citation-acm-v8.txt', 'data/ACM_1995_2004.csv')
+    process_file('data/citation-acm-v8.txt', 'data/ACM_1995_2004.csv')
 
 if __name__ == '__main__':
     main()
